@@ -3,6 +3,7 @@
 使用する出撃，遠征，課金アイテムを変数として扱い，戦果を最大化するような組み合わせを求めます．
 
 ダウンロード（アプリ）：https://drive.google.com/file/d/1hwLqBoDngyR6y98UbXFTuZhRBsSE5jE1/
+
 ダウンロード（出撃データテンプレ）：https://docs.google.com/spreadsheets/d/1rOqHXiJcmuV5CXCUL1KUckUWW7uGotGa/
 
 ## 紹介画像
