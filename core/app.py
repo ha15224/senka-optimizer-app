@@ -66,13 +66,14 @@ def load_sorties_from_excel(path):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("月間戦果最適化計算機 v0.1")
+        self.title("月間戦果最適化計算機 v0.2")
         self.geometry("700x800")
 
         self.sortie_names = None
         self.sortie_weights = None
         self.senka = None
         self.maxproportion = None
+        self.enable_short_bucket = tk.BooleanVar(value=True)
         self.params = {}
 
         param_defs = [
@@ -110,6 +111,12 @@ class App(tk.Tk):
             ).grid(row=i, column=2, sticky="w")
 
             self.params[key] = var
+
+        tk.Checkbutton(
+            self,
+            text="「遠征時間」中に短時間の遠征（バケツ遠征）を許容",
+            variable=self.enable_short_bucket
+        ).pack(pady=5)
 
         btn_frame = tk.Frame(self)
         btn_frame.pack(pady=5)
@@ -170,9 +177,9 @@ class App(tk.Tk):
         # Define each section
         sections = [
             ("出撃数", sortie_names, sortie_vals),
-            ("稼働する遠征の時間数", ["長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ", "海上護衛", "海上護衛キラ", "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ", "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"], 
+            ("稼働する遠征の時間数", ["長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ", "海上護衛", "海上護衛キラ","タンカー護衛", "タンカー護衛キラ", "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ", "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"], 
             [run_vals[i]+off_vals[i] for i in run_vals]),
-            ("休息時間の遠征選択", ["長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ", "海上護衛", "海上護衛キラ", "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ", "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"], 
+            ("休息時間の遠征選択", ["長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ", "海上護衛", "海上護衛キラ","タンカー護衛", "タンカー護衛キラ", "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ", "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"], 
             [sleep_vals[i] for i in sleep_vals]),
             ("アイテム屋からの購入数", ["タンカー徴用", "弾薬", "高速修復材", "出撃セット", "間宮", "工廠セット"], 
             [shop_vals[i] for i in shop_vals])
@@ -266,6 +273,7 @@ class App(tk.Tk):
                 self.sortie_weights,
                 self.senka,
                 self.maxproportion,
+                enable_short_bucket=self.enable_short_bucket.get(),
                 **params
             )
             print("\nOptimization finished.")
