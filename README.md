@@ -1,10 +1,10 @@
-# 月間戦果最適化計算機 v0.1
+# 月間戦果最適化計算機 v0.2
 
 使用する出撃，遠征，課金アイテムを変数として扱い，戦果を最大化するような組み合わせを求めます
 
 この最適化は線形計画問題に帰着されるため，ソルバーとしてPuLP/CBCを使います
 
-ダウンロード（アプリ）：https://drive.google.com/file/d/1hwLqBoDngyR6y98UbXFTuZhRBsSE5jE1/
+ダウンロード（アプリ）：https://drive.google.com/file/d/10wJ55chyYPjs4vQ8wj-DVj4vEwN-f9TM/
 
 ダウンロード（出撃データテンプレ）：https://docs.google.com/spreadsheets/d/1rOqHXiJcmuV5CXCUL1KUckUWW7uGotGa/
 
@@ -37,3 +37,6 @@
 - 結果画面に表示される「出撃数」とは，エクセルに設定した各出撃の実行数です
 - 結果画面に表示される「稼働する遠征の時間数」は各遠征の稼働時間数です．例えば長距離が300と出力された場合，300時間分の長距離の稼働（600回）を意味します
 - 結果画面に表示される「休息時間の遠征選択」には0.00か1.00しか出力されません．1.00が出力された遠征を休息中に稼働してください
+
+## 旧バージョン
+アプリ v0.1：https://drive.google.com/file/d/1hwLqBoDngyR6y98UbXFTuZhRBsSE5jE1/
