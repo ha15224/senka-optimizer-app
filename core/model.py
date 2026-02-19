@@ -247,6 +247,50 @@ def solve_senka(
     exped_sleep_vals = round_result(exped_sleep_vals, 2)
     shop_vals = round_result(shop_vals, 2)
 
-    return final_senka, sortie, exped_run_vals, exped_off_vals, exped_sleep_vals, shop_vals
+    # --- Resource breakdown (first 5 resources only) ---
+
+    sortie_array = np.array([sortie[i] for i in range(n_sorties)])
+    run_array = np.array([exped_run_vals[i] for i in range(16)])
+    off_array = np.array([exped_off_vals[i] for i in range(16)])
+    sleep_array = np.array([exped_sleep_vals[i] for i in range(16)])
+    shop_array = np.array([shop_vals[i] for i in range(6)])
+
+    # Sorties consume resources (weights were negated earlier)
+    spent_from_sorties = np.dot((-sortie_weights)[:, :5].T, sortie_array)
+
+    # Expeditions earn resources
+    earned_from_expeds = (
+        np.dot(exped_weights_run[:5, :], run_array) +
+        np.dot(exped_weights_off[:5, :], off_array) +
+        days * np.dot(exped_weights_sleep[:5, :], sleep_array)
+    )
+
+    # Shop purchases
+    bought_from_shop = np.dot(shopweights[:5, :], shop_array)
+
+    # Offsets (initial resources)
+    offset = offsets[:5]
+
+    remaining = offset - spent_from_sorties + earned_from_expeds + bought_from_shop
+
+    # Round for display
+    spent_from_sorties = np.round(spent_from_sorties, 2)
+    earned_from_expeds = np.round(earned_from_expeds, 2)
+    bought_from_shop = np.round(bought_from_shop, 2)
+    remaining = np.round(remaining, 2)
+
+
+    return (
+        final_senka,
+        sortie,
+        exped_run_vals,
+        exped_off_vals,
+        exped_sleep_vals,
+        shop_vals,
+        spent_from_sorties,
+        earned_from_expeds,
+        bought_from_shop,
+        remaining
+    )
 
 

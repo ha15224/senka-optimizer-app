@@ -66,7 +66,7 @@ def load_sorties_from_excel(path):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("月間戦果最適化計算機 v0.2")
+        self.title("月間戦果最適化計算機 v0.3")
         self.geometry("700x800")
 
         self.sortie_names = None
@@ -169,39 +169,136 @@ class App(tk.Tk):
         )
         dev_label.pack(padx=5, pady=5, fill="x")
 
-    def show_results_window(self, sortie_names, sortie_vals, run_vals, off_vals, sleep_vals, shop_vals):
+    def show_results_window(
+        self,
+        sortie_names,
+        sortie_vals,
+        run_vals,
+        off_vals,
+        sleep_vals,
+        shop_vals,
+        spent_from_sorties,
+        earned_from_expeds,
+        bought_from_shop,
+        remaining
+    ):
         win = tk.Toplevel(self)
         win.title("最適化結果")
-        win.geometry("1000x600")  # wider window to fit horizontally
+        win.geometry("1300x800")
 
-        # Define each section
-        sections = [
-            ("出撃数", sortie_names, sortie_vals),
-            ("稼働する遠征の時間数", ["長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ", "海上護衛", "海上護衛キラ","タンカー護衛", "タンカー護衛キラ", "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ", "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"], 
-            [run_vals[i]+off_vals[i] for i in run_vals]),
-            ("休息時間の遠征選択", ["長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ", "海上護衛", "海上護衛キラ","タンカー護衛", "タンカー護衛キラ", "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ", "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"], 
-            [sleep_vals[i] for i in sleep_vals]),
-            ("アイテム屋からの購入数", ["タンカー徴用", "弾薬", "高速修復材", "出撃セット", "間宮", "工廠セット"], 
-            [shop_vals[i] for i in shop_vals])
+        expedition_names = [
+            "長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ",
+            "海上護衛", "海上護衛キラ", "タンカー護衛", "タンカー護衛キラ",
+            "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ",
+            "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"
         ]
 
-        # Arrange sections in columns
+        shop_names = [
+            "タンカー徴用", "弾薬", "高速修復材",
+            "出撃セット", "間宮", "工廠セット"
+        ]
+
+        # -----------------------------
+        # Main numeric sections
+        # -----------------------------
+        sections = [
+            ("出撃数", sortie_names,
+            [sortie_vals[i] for i in range(len(sortie_names))]),
+
+            ("稼働する遠征の時間数", expedition_names,
+            [run_vals[i] + off_vals[i] for i in range(16)]),
+
+            ("休息時間の遠征選択", expedition_names,
+            [sleep_vals[i] for i in range(16)]),
+
+            ("アイテム屋からの購入数", shop_names,
+            [shop_vals[i] for i in range(6)])
+        ]
+
         col = 0
         for title, names, values in sections:
-            # Section title
-            tk.Label(win, text=title, font=("Consolas", 12, "bold")).grid(row=0, column=col, columnspan=2, pady=(10,0))
 
-            # Column headers
+            tk.Label(
+                win,
+                text=title,
+                font=("Consolas", 12, "bold")
+            ).grid(row=0, column=col, columnspan=2, pady=(10, 0))
+
             tk.Label(win, text="Name").grid(row=1, column=col, sticky="w", padx=5)
             tk.Label(win, text="Value").grid(row=1, column=col+1, sticky="w", padx=5)
 
-            # Entries / labels
             for i, name in enumerate(names):
-                name_var = tk.StringVar(value=name)
-                tk.Label(win, text=name, width=20, anchor="w").grid(row=i+2, column=col, padx=5, pady=2, sticky="w")
-                tk.Label(win, text=f"{values[i]:.2f}", width=10, anchor="w").grid(row=i+2, column=col+1, padx=5, pady=2, sticky="w")
+                tk.Label(
+                    win,
+                    text=name,
+                    width=20,
+                    anchor="w"
+                ).grid(row=i+2, column=col, padx=5, pady=2, sticky="w")
 
-            col += 2  # move to the next section column
+                tk.Label(
+                    win,
+                    text=f"{values[i]:.2f}",
+                    width=12,
+                    anchor="w"
+                ).grid(row=i+2, column=col+1, padx=5, pady=2, sticky="w")
+
+            col += 2
+
+        # -----------------------------
+        # Resource breakdown column
+        # -----------------------------
+        resource_names = ["燃料", "弾薬", "鋼材", "バケツ", "cond"]
+
+        resource_sections = [
+            ("出撃による消費資源", spent_from_sorties),
+            ("遠征による獲得資源", earned_from_expeds),
+            ("課金による獲得資源", bought_from_shop),
+            ("最終残量", remaining),
+        ]
+
+        # Create one frame occupying the next two columns
+        resource_frame = tk.Frame(win)
+        resource_frame.grid(row=0, column=col, rowspan=40, padx=20, sticky="n")
+
+        current_row = 0
+
+        for title, values in resource_sections:
+
+            tk.Label(
+                resource_frame,
+                text=title,
+                font=("Consolas", 12, "bold")
+            ).grid(row=current_row, column=0, columnspan=2, pady=(10, 0))
+
+            current_row += 1
+
+            tk.Label(resource_frame, text="Resource").grid(
+                row=current_row, column=0, sticky="w", padx=5
+            )
+            tk.Label(resource_frame, text="Value").grid(
+                row=current_row, column=1, sticky="w", padx=5
+            )
+
+            current_row += 1
+
+            for i, name in enumerate(resource_names):
+                tk.Label(
+                    resource_frame,
+                    text=name,
+                    width=10,
+                    anchor="w"
+                ).grid(row=current_row, column=0, padx=5, pady=2, sticky="w")
+
+                tk.Label(
+                    resource_frame,
+                    text=f"{values[i]:.2f}",
+                    width=12,
+                    anchor="w"
+                ).grid(row=current_row, column=1, padx=5, pady=2, sticky="w")
+
+                current_row += 1
+
+            current_row += 1  # spacing between tables
 
     def get_params(self):
         try:
@@ -269,7 +366,18 @@ class App(tk.Tk):
         try:
             print("Starting optimization...\n")
             params = self.get_params()
-            senka_value, sortie_vals, run_vals, off_vals, sleep_vals, shop_vals = solve_senka(
+            (
+                senka_value,
+                sortie_vals,
+                run_vals,
+                off_vals,
+                sleep_vals,
+                shop_vals,
+                spent_from_sorties,
+                earned_from_expeds,
+                bought_from_shop,
+                remaining
+            ) = solve_senka(
                 self.sortie_weights,
                 self.senka,
                 self.maxproportion,
@@ -292,7 +400,11 @@ class App(tk.Tk):
                 run_vals,
                 off_vals,
                 sleep_vals,
-                shop_vals
+                shop_vals,
+                spent_from_sorties,
+                earned_from_expeds,
+                bought_from_shop,
+                remaining
             )
 
         except Exception as e:
