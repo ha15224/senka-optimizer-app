@@ -302,11 +302,16 @@ class App(tk.Tk):
 
     def get_params(self):
         try:
-            return {
+            # --- strict integer check for days ---
+            days_str = self.params["days"].get()
+            if not days_str.isdigit():
+                raise ValueError("日数は整数で入力してください．")
+
+            params = {
                 "activetime": float(self.params["activetime"].get()),
                 "inactivetime": float(self.params["inactivetime"].get()),
                 "sleeptime": float(self.params["sleeptime"].get()),
-                "days": int(self.params["days"].get()),
+                "days": int(days_str),
                 "max_money": float(self.params["max_money"].get()),
                 "special": float(self.params["special"].get()),
                 "initialfuel": float(self.params["initialfuel"].get()),
@@ -315,8 +320,31 @@ class App(tk.Tk):
                 "initialbucket": float(self.params["initialbucket"].get()),
                 "initialcond": float(self.params["initialcond"].get()),
             }
-        except ValueError:
-            raise ValueError("パラメータの値が正しくありません．数値を入力してください．")
+        except ValueError as e:
+            raise ValueError(str(e) if str(e) else "パラメータの値が正しくありません．数値を入力してください．")
+
+        # ---- negativity check for first five parameters ----
+        first_five_keys = [
+            "activetime",
+            "inactivetime",
+            "sleeptime",
+            "days",
+            "max_money"
+        ]
+
+        key_labels = {
+            "activetime": "稼働時間",
+            "inactivetime": "遠征時間",
+            "sleeptime": "休息時間",
+            "days": "日数",
+            "max_money": "最大課金額"
+        }
+
+        for key in first_five_keys:
+            if params[key] < 0:
+                raise ValueError(f"{key_labels[key]} は0以上でなければなりません．")
+
+        return params
 
 
     def load_excel(self):
