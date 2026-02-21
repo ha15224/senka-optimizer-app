@@ -66,7 +66,7 @@ def load_sorties_from_excel(path):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("月間戦果最適化計算機 v0.3")
+        self.title("月間戦果最適化計算機 v0.32")
         self.geometry("700x800")
 
         self.sortie_names = None

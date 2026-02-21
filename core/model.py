@@ -168,7 +168,7 @@ def solve_senka(
     )
     exped_run = pulp.LpVariable.dicts("exped_run", range(16), lowBound=0, upBound=runtime)
     exped_off = pulp.LpVariable.dicts("exped_off", range(16), lowBound=0, upBound=offtime)
-    exped_sleep = pulp.LpVariable.dicts("exped_sleep", range(16), lowBound=0)
+    exped_sleep = pulp.LpVariable.dicts("exped_sleep", range(16), lowBound=0, upBound=1)
     shop = pulp.LpVariable.dicts("shop", range(6), lowBound=0)
 
     prob += pulp.lpSum(senka[i] * sortie[i] for i in range(n_sorties))
@@ -226,6 +226,11 @@ def solve_senka(
     )
 
     prob.solve(solver)
+
+    status = pulp.LpStatus[prob.status]
+
+    if status != "Optimal":
+        raise RuntimeError(f"設定された最適化問題に解が存在しません．ソルバーのステータス: {status}")
 
     # --- forward CBC log to Python stdout (GUI) ---
     if os.path.exists(log_file):
