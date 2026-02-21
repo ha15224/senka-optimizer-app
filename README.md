@@ -1,10 +1,10 @@
-# 月間戦果最適化計算機 v0.31
+# 月間戦果最適化計算機 v0.32
 
 使用する出撃，遠征，課金アイテムを変数として扱い，戦果を最大化するような組み合わせを求めます
 
 この最適化は線形計画問題に帰着されるため，ソルバーとしてPuLP/CBCを使います
 
-ダウンロード（アプリ）：https://drive.google.com/file/d/1JAL_6djwIMaGUGtPkMb5nDNMjIURGmU5/
+ダウンロード（アプリ）：https://drive.google.com/file/d/1cF1oJ-qfD63CSK4LfvHJYdrpZYTSBYPK/
 
 ダウンロード（出撃データテンプレ）：https://docs.google.com/spreadsheets/d/1rOqHXiJcmuV5CXCUL1KUckUWW7uGotGa/
 
