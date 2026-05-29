@@ -1,28 +1,30 @@
-# 月間戦果最適化計算機 v0.32
+# 月間戦果最適化計算機 v0.90
 
 使用する出撃，遠征，課金アイテムを変数として扱い，戦果を最大化するような組み合わせを求めます
 
 この最適化は線形計画問題に帰着されるため，ソルバーとしてPuLP/CBCを使います
 
-ダウンロード（アプリ）：https://drive.google.com/file/d/1cF1oJ-qfD63CSK4LfvHJYdrpZYTSBYPK/
+ダウンロード（アプリ）：https://drive.google.com/file/d/14SACL_JRR7YGWM2U3ULB6FkGR1WWaAbe
 
 ダウンロード（出撃データテンプレ）：https://docs.google.com/spreadsheets/d/1eBN6qbRLIPYyuEY1H3xTFn0sNhZYGGZn/
 
 ダウンロード（ドロップデータ）：https://docs.google.com/spreadsheets/d/107yJmRhAyjkye3ZP8doCkqTm0RmpeolM/
 
 ## 紹介画像
-<img width="702" height="832" alt="image" src="https://github.com/user-attachments/assets/ddd66a47-5a2d-4e4e-9d23-8a7e7bee913e" />
-<img width="664" height="279" alt="image" src="https://github.com/user-attachments/assets/9f6cb1e0-7ef2-4113-ad2b-dabb2a523fe8" />
-<img width="702" height="832" alt="image" src="https://github.com/user-attachments/assets/c48e232a-b4c0-4fbf-9088-95d5a6442c80" />
-<img width="1002" height="632" alt="image" src="https://github.com/user-attachments/assets/d981d75a-4cf4-4dbf-baac-0a11de9b6fe6" />
+<img width="702" height="832" alt="image" src="https://github.com/user-attachments/assets/af559520-6816-4f45-a561-d65f02b68226" />
+<img width="641" height="277" alt="image" src="https://github.com/user-attachments/assets/5ad7a906-ba8b-469d-92ed-b1ef7f1e9e3d" />
+<img width="893" height="477" alt="image" src="https://github.com/user-attachments/assets/6195f79d-938c-43fa-b87f-b5d360907630" />
+<img width="702" height="832" alt="image" src="https://github.com/user-attachments/assets/8b86f7a1-191a-466d-a479-82321793a3f0" />
+<img width="1402" height="832" alt="image" src="https://github.com/user-attachments/assets/3ec9114d-c5bd-46d5-bff9-6fdb5a09915c" />
 
 ## 操作手順
-1. アプリと出撃データテンプレをダウンロードします
+1. アプリと出撃データテンプレ・ドロップデータをダウンロードします
 2. 出撃データは自分のデータで埋めてください（出撃シミュの数値を推奨します）
 3. アプリから最適化パラメータを入力します
 4. 出撃データのエクセルを読み込みます
-5. 最適化を実行します
-6. 結果が別画面にて出力されます
+5. ドロップデータは修正せずダウンロードしたものをそのまま読み込んでください
+6. 最適化を実行します
+7. 結果が別画面にて出力されます
 
 ## 備考
 - 出撃データエクセルは自由に編集してください
@@ -45,4 +47,4 @@
 
 アプリ v0.2：https://drive.google.com/file/d/1VLpqsWsZS0iUbLgf_R6uEJ15fZuOMTfO/
 
-アプリ v0.3：https://drive.google.com/file/d/1vaGriPGRYMml-tBNjG2Ky1H82kg2A5xT/
+アプリ v0.32：https://drive.google.com/file/d/1cF1oJ-qfD63CSK4LfvHJYdrpZYTSBYPK/
