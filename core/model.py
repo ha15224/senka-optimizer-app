@@ -45,9 +45,13 @@ def simplify(x, tol=1e-3):
 
 def solve_senka(
     sortie_weights,
+    drop_data,
+    sortie_worlds,
+    sortie_nodes,
     senka,
     maxproportion,
     enable_short_bucket=True,
+    enable_sunk_recovery=True,
     *,
     activetime,
     inactivetime,
@@ -59,7 +63,8 @@ def solve_senka(
     initialammo,
     initialsteel,
     initialbucket,
-    initialcond
+    initialcond,
+    sunk_hourly_rate,
 ):
     sortie_weights = -np.asarray(sortie_weights, dtype=float)
     senka = np.asarray(senka, dtype=float)
@@ -145,6 +150,82 @@ def solve_senka(
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1]
     ])
 
+    # ship classes order: SS DD CL AV CA BB CVL CV
+    ship_classes = ["SS", "DD", "CL", "AV", "CA", "BB", "CVL", "CV"]
+
+    drop_per_map = np.zeros((8, n_sorties))
+
+    for r in range(n_sorties):
+
+        world = str(sortie_worlds[r])   # e.g. "1-1"
+        nodes = str(sortie_nodes[r])    # e.g. "ABC"
+
+        # Sum all node drops for this sortie
+        for node_letter in nodes:
+
+            lookup_key = f"{world}{node_letter}"
+            # example: "1-1A"
+
+            if lookup_key not in drop_data:
+                raise ValueError(
+                    f"ドロップデータに {lookup_key} が存在しません"
+                )
+
+            for i, ship_class in enumerate(ship_classes):
+                drop_per_map[i, r] += drop_data[lookup_key][ship_class]
+
+    # SS ~ CV only (8), CA+BB, CA+CVL, CA+CV
+    sinking_patterns_mat = np.array([
+        [1,0,0,0,0,0,0,0,0,0,0],
+        [0,1,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,0,0,0,0,0,0,0],
+        [0,0,0,1,0,0,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,1,1,1],
+        [0,0,0,0,0,1,0,0,1,0,0],
+        [0,0,0,0,0,0,1,0,0,1,0],
+        [0,0,0,0,0,0,0,1,0,0,1],
+    ])
+
+    # sinking_time
+    sinking_time = np.array([
+        [0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0],
+        [-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-1.8*3600/sunk_hourly_rate,-1.5*3600/sunk_hourly_rate,-1.5*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate],
+    ])
+
+    # ship classes: SS DD CL AV CA BB CVL CV
+    sinking_reso = np.array([
+        [8, 14,22,33,31,71, 35,64],
+        [16,18,25,35,64,126,38,59],
+        [0,0,0,0,4,15,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+    ])
+
+    # ship classes: SS DD CL AV CA BB CVL CV
+    scrap_reso = np.array([
+        [1,1,2,  3, 2.5 ,10.5,4 ,10.5],
+        [2,2,5,  1, 5.5 ,29 , 4 ,14 ],
+        [2,6,9.5,13,16.5,53 , 15,28 ],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5],
+    ])
+
+    drop_lag = np.array([
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [-6,-6,-6,-6,-6,-6,-6,-6],
+    ])
+
+
     shopweights = np.array([
         [1200, 0, 0, 500, 0, 200],
         [0, 250, 0, 500, 0, 200],
@@ -164,6 +245,31 @@ def solve_senka(
     sortie = pulp.LpVariable.dicts(
         "sortie",
         range(n_sorties),
+        lowBound=0
+    )
+    sinking_pattern = pulp.LpVariable.dicts(
+        "sinking_pattern",
+        range(11),
+        lowBound=0
+    )
+    sortie_withdrop = pulp.LpVariable.dicts(
+        "sortie_withdrop",
+        range(n_sorties),
+        lowBound=0
+    )
+    drops = pulp.LpVariable.dicts(
+        "drops",
+        range(8),
+        lowBound=0
+    )
+    drops_sunk = pulp.LpVariable.dicts(
+        "drops_sunk",
+        range(8),
+        lowBound=0
+    )
+    drops_scrap = pulp.LpVariable.dicts(
+        "drops_scrap",
+        range(8),
         lowBound=0
     )
     exped_run = pulp.LpVariable.dicts("exped_run", range(16), lowBound=0, upBound=runtime)
@@ -190,6 +296,22 @@ def solve_senka(
         for i in range(4):
             prob += exped_off[i] == 0
 
+    if not enable_sunk_recovery:
+        for i in range(11):
+            prob += sinking_pattern[i] == 0
+
+    for i in range(n_sorties):
+        prob += sortie_withdrop[i] - sortie[i] <= 0
+
+    for i in range(8):
+        prob += pulp.lpSum(drop_per_map[i,r] * sortie_withdrop[r] for r in range(n_sorties)) == drops[i]
+
+    for i in range(8):
+        prob += drops[i] - drops_sunk[i] - drops_scrap[i] == 0
+
+    for i in range(8):
+        prob += pulp.lpSum(sinking_patterns_mat[i,r] * sinking_pattern[r] for r in range(11)) == drops_sunk[i]
+
     for r in range(6):
         prob += (
             pulp.lpSum(sortie_weights[i, r] * sortie[i] for i in range(n_sorties)) +
@@ -197,6 +319,10 @@ def solve_senka(
             pulp.lpSum(exped_weights_off[r, i] * exped_off[i] for i in range(16)) +
             days * pulp.lpSum(exped_weights_sleep[r, i] * exped_sleep[i] for i in range(16)) +
             pulp.lpSum(shopweights[r, i] * shop[i] for i in range(6)) +
+            pulp.lpSum(sinking_reso[r, i] * drops_sunk[i] for i in range(8)) +
+            pulp.lpSum(scrap_reso[r, i] * drops_scrap[i] for i in range(8)) +
+            pulp.lpSum(drop_lag[r, i] * drops[i] for i in range(8)) +
+            pulp.lpSum(sinking_time[r, i] * sinking_pattern[i] for i in range(11)) +
             offsets[r]
             >= 0
         )
@@ -243,6 +369,11 @@ def solve_senka(
     exped_sleep_vals = simplify(exped_sleep)
     shop_vals = simplify(shop)
 
+    sortie_withdrop = simplify(sortie_withdrop)
+    drops = simplify(drops)
+    drops_sunk = simplify(drops_sunk)
+    drops_scrap = simplify(drops_scrap)
+
     final_senka = sum(senka[i] * sortie[i] for i in range(n_sorties)) + special
 
     final_senka = round_result(final_senka, 2)
@@ -260,6 +391,9 @@ def solve_senka(
     sleep_array = np.array([exped_sleep_vals[i] for i in range(16)])
     shop_array = np.array([shop_vals[i] for i in range(6)])
 
+    drops_sunk_array = np.array([drops_sunk[i] for i in range(8)])
+    drops_scrap_array = np.array([drops_scrap[i] for i in range(8)])
+
     # Sorties consume resources (weights were negated earlier)
     spent_from_sorties = np.dot((-sortie_weights)[:, :5].T, sortie_array)
 
@@ -270,13 +404,22 @@ def solve_senka(
         days * np.dot(exped_weights_sleep[:5, :], sleep_array)
     )
 
+    # Scrap earn reso
+    earned_from_scrap = np.dot(scrap_reso[:3, :], drops_scrap_array)
+
+    # Sink earn reso
+    earned_from_sunk = np.dot(sinking_reso[:3, :], drops_sunk_array)
+
     # Shop purchases
     bought_from_shop = np.dot(shopweights[:5, :], shop_array)
 
     # Offsets (initial resources)
     offset = offsets[:5]
 
-    remaining = offset - spent_from_sorties + earned_from_expeds + bought_from_shop
+    earned_from_scrap_dim5 = np.pad(earned_from_scrap, (0, 2))
+    earned_from_sunk_dim5 = np.pad(earned_from_sunk, (0, 2))
+
+    remaining = offset - spent_from_sorties + earned_from_expeds + bought_from_shop + earned_from_scrap_dim5 + earned_from_sunk_dim5
 
     # Round for display
     spent_from_sorties = np.round(spent_from_sorties, 2)
@@ -284,6 +427,11 @@ def solve_senka(
     bought_from_shop = np.round(bought_from_shop, 2)
     remaining = np.round(remaining, 2)
 
+    sortie_withdrop = round_result(sortie_withdrop, 2)
+    drops_sunk = round_result(drops_sunk, 2)
+    drops_scrap = round_result(drops_scrap, 2)
+    earned_from_scrap = round_result(earned_from_scrap, 2)
+    earned_from_sunk = round_result(earned_from_sunk, 2)
 
     return (
         final_senka,
@@ -295,7 +443,12 @@ def solve_senka(
         spent_from_sorties,
         earned_from_expeds,
         bought_from_shop,
-        remaining
+        remaining,
+        sortie_withdrop, # new items from here
+        drops_sunk,
+        drops_scrap,
+        earned_from_scrap,
+        earned_from_sunk,
     )
 
 
