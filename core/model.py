@@ -116,38 +116,38 @@ def solve_senka(
     # ])
 
     exped_weights_run = np.array([
-        [-50.0, -50.0, 115.6, 157.0, 133.0, 220.0, 97 , 149.5 , 49.50, 79.50, 171.2, 222.9, -29.1, -29.1, 183.5, 234.5],
-        [240.0, 360.0, 63.27, -34.0, 160.0, 244.0, 0 , 0 ,  63.50, 101.0, 138.3, 180.0, 164.9, 213.8, -30.2, -30.2],
-        [72, 108, 0, 0, 18, 24, 0 , 0 , 0 , 0, 0, 0, 120, 177, 80, 123],
-        [1.000, 1.000, 1.091, 1.000, 0.000, 0.000, 0 , 0.375 ,  0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000],
-        [0.000, -30.0, -13.1, -12.0, 0.000, -10.0, 0 , -3.75 ,  0.000, -4.50, 0.000, -5.15, 0.000, -4.37, 0.000, -4.12],
-        [-20.0, -30.0, -16.4, -15.0, -6.67, -10.0, -3.75 , -3.75 ,  -2.50, -3.75, -4.29, -6.43, -3.64, -5.45, -3.43, -5.14]
+        [-40.0,   -40     ,-50.0, 115.6, 157.0, 133.0, 220.0, 97 , 149.5 , 49.50, 79.50, 171.2, 222.9, -29.1, -29.1, 183.5, 234.5],
+        [240.0,    336    ,355.2, 63.27, -34.0, 160.0, 244.0, 0 , 0 ,  63.50, 101.0, 138.3, 180.0, 164.9, 213.8, -30.2, -30.2],
+        [72,   100.8       ,106.6, 0, 0, 18, 24, 0 , 0 , 0 , 0, 0, 0, 120, 177, 80, 123],
+        [1.000,   1.000   ,1.000, 1.091, 1.000, 0.000, 0.000, 0 , 0.375 ,  0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000],
+        [0.000,  -24   ,  -30.0, -13.1, -12.0, 0.000, -10.0, 0 , -3.75 ,  0.000, -4.50, 0.000, -5.15, 0.000, -4.37, 0.000, -4.12],
+        [-20.0,  -28    , -30.0, -16.4, -15.0, -6.67, -10.0, -3.75 , -3.75 ,  -2.50, -3.75, -4.29, -6.43, -3.64, -5.45, -3.43, -5.14]
     ])
 
-    exped_weights_off = np.zeros((6, 16))
+    exped_weights_off = np.zeros((6, 17))
     exped_weights_off[:5, :] = exped_weights_run[:5, :]
 
     exped_weights_sleep = np.array([
-        [-25, -25, 106, 157, 200, 330, 388 , 598 , 198, 318, 400, 520, -80, -80, 535, 684],
-        [120, 180, 58, -34, 240, 366, 0 , 0 , 254, 404, 323, 420, 453, 588, -84, -84],
-        [36, 54, 0, 0, 24, 36, 0 , 0 ,0, 0, 0, 0, 324, 486, 240, 360],
-        [0.5, 0.5, 1, 1, 0, 0, 0 , 1.5 ,1, 1, 0, 0, 0, 0, 0, 0],
-        [0, -15, -12, -12, 0, -15, 0 , 0 , 0, -18, 0, -12, 0, -12, 0, -12],
-        [0, 0, 0, 0, 0, 0, 0 , 0 ,0, 0, 0, 0, 0, 0, 0, 0]
+        [-20, -20, -25, 106, 157, 200, 330, 388 , 598 , 198, 318, 400, 520, -80, -80, 535, 684],
+        [120, 168, 177.6, 58, -34, 240, 366, 0 , 0 , 254, 404, 323, 420, 453, 588, -84, -84],
+        [36, 50.4 ,53.3, 0, 0, 24, 36, 0 , 0 ,0, 0, 0, 0, 324, 486, 240, 360],
+        [0.5,0.5 ,0.5, 1, 1, 0, 0, 0 , 1.5 ,1, 1, 0, 0, 0, 0, 0, 0],
+        [0,-12 ,-15, -12, -12, 0, -15, 0 , 0 , 0, -18, 0, -12, 0, -12, 0, -12],
+        [0,0, 0, 0, 0, 0, 0, 0 , 0 ,0, 0, 0, 0, 0, 0, 0, 0]
     ])
 
-    exped_weights_time = np.array([0.5, 0.5, 55/60, 1, 1.5, 1.5, 4, 4, 4, 4, 7/3, 7/3, 11/4, 11/4, 175/60, 175/60])
+    exped_weights_time = np.array([0.5, 0.45 , 0.5, 55/60, 1, 1.5, 1.5, 4, 4, 4, 4, 7/3, 7/3, 11/4, 11/4, 175/60, 175/60])
 
     # senka = np.array([1.47, 1.47, 1.47, 1.30, 1.30, 2.40, 2.48, 0, 1.47, 2.31])
 
     dupe_exped_constr = np.array([
-        [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1]
+        [1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1]
     ])
 
     # ship classes order: SS DD CL AV CA BB CVL CV
@@ -193,7 +193,7 @@ def solve_senka(
         [0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0],
-        [-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-1.8*3600/sunk_hourly_rate,-1.5*3600/sunk_hourly_rate,-1.5*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate],
+        [-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-3600/sunk_hourly_rate,-1.5*3600/sunk_hourly_rate,-1.3*3600/sunk_hourly_rate,-1.3*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate,-2*3600/sunk_hourly_rate],
     ])
 
     # ship classes: SS DD CL AV CA BB CVL CV
@@ -222,7 +222,7 @@ def solve_senka(
         [0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0],
-        [-6,-6,-6,-6,-6,-6,-6,-6],
+        [-7.5,-7.5,-7.5,-7.5,-7.5,-7.5,-7.5,-7.5],
     ])
 
 
@@ -272,25 +272,25 @@ def solve_senka(
         range(8),
         lowBound=0
     )
-    exped_run = pulp.LpVariable.dicts("exped_run", range(16), lowBound=0, upBound=runtime)
-    exped_off = pulp.LpVariable.dicts("exped_off", range(16), lowBound=0, upBound=offtime)
-    exped_sleep = pulp.LpVariable.dicts("exped_sleep", range(16), lowBound=0, upBound=1)
+    exped_run = pulp.LpVariable.dicts("exped_run", range(17), lowBound=0, upBound=runtime)
+    exped_off = pulp.LpVariable.dicts("exped_off", range(17), lowBound=0, upBound=offtime)
+    exped_sleep = pulp.LpVariable.dicts("exped_sleep", range(17), lowBound=0, upBound=1)
     shop = pulp.LpVariable.dicts("shop", range(6), lowBound=0)
 
     prob += pulp.lpSum(senka[i] * sortie[i] for i in range(n_sorties))
     prob += pulp.lpSum(shopcosts[i] * shop[i] for i in range(6)) <= max_money
-    prob += pulp.lpSum(exped_run[i] for i in range(16)) == runtime * 3
-    prob += pulp.lpSum(exped_off[i] for i in range(16)) == offtime * 3
-    prob += pulp.lpSum(exped_sleep[i] for i in range(16)) == 3
+    prob += pulp.lpSum(exped_run[i] for i in range(17)) == runtime * 3
+    prob += pulp.lpSum(exped_off[i] for i in range(17)) == offtime * 3
+    prob += pulp.lpSum(exped_sleep[i] for i in range(17)) == 3
 
-    for i in range(16):
+    for i in range(17):
         if exped_weights_time[i] >= sleeptime:
             prob += exped_sleep[i] == 0
 
     for k in range(7):
-        prob += pulp.lpSum(dupe_exped_constr[k, i] * exped_sleep[i] for i in range(16)) <= 1
-        prob += pulp.lpSum(dupe_exped_constr[k, i] * exped_run[i] for i in range(16)) <= runtime
-        prob += pulp.lpSum(dupe_exped_constr[k, i] * exped_off[i] for i in range(16)) <= offtime
+        prob += pulp.lpSum(dupe_exped_constr[k, i] * exped_sleep[i] for i in range(17)) <= 1
+        prob += pulp.lpSum(dupe_exped_constr[k, i] * exped_run[i] for i in range(17)) <= runtime
+        prob += pulp.lpSum(dupe_exped_constr[k, i] * exped_off[i] for i in range(17)) <= offtime
 
     if not enable_short_bucket:
         for i in range(4):
@@ -315,9 +315,9 @@ def solve_senka(
     for r in range(6):
         prob += (
             pulp.lpSum(sortie_weights[i, r] * sortie[i] for i in range(n_sorties)) +
-            pulp.lpSum(exped_weights_run[r, i] * exped_run[i] for i in range(16)) +
-            pulp.lpSum(exped_weights_off[r, i] * exped_off[i] for i in range(16)) +
-            days * pulp.lpSum(exped_weights_sleep[r, i] * exped_sleep[i] for i in range(16)) +
+            pulp.lpSum(exped_weights_run[r, i] * exped_run[i] for i in range(17)) +
+            pulp.lpSum(exped_weights_off[r, i] * exped_off[i] for i in range(17)) +
+            days * pulp.lpSum(exped_weights_sleep[r, i] * exped_sleep[i] for i in range(17)) +
             pulp.lpSum(shopweights[r, i] * shop[i] for i in range(6)) +
             pulp.lpSum(sinking_reso[r, i] * drops_sunk[i] for i in range(8)) +
             pulp.lpSum(scrap_reso[r, i] * drops_scrap[i] for i in range(8)) +
@@ -386,9 +386,9 @@ def solve_senka(
     # --- Resource breakdown (first 5 resources only) ---
 
     sortie_array = np.array([sortie[i] for i in range(n_sorties)])
-    run_array = np.array([exped_run_vals[i] for i in range(16)])
-    off_array = np.array([exped_off_vals[i] for i in range(16)])
-    sleep_array = np.array([exped_sleep_vals[i] for i in range(16)])
+    run_array = np.array([exped_run_vals[i] for i in range(17)])
+    off_array = np.array([exped_off_vals[i] for i in range(17)])
+    sleep_array = np.array([exped_sleep_vals[i] for i in range(17)])
     shop_array = np.array([shop_vals[i] for i in range(6)])
 
     drops_sunk_array = np.array([drops_sunk[i] for i in range(8)])

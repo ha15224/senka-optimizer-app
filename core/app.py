@@ -144,7 +144,7 @@ def load_drop_data_from_excel(path):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("月間戦果最適化計算機 v0.90")
+        self.title("月間戦果最適化計算機 v0.91")
         self.geometry("700x800")
 
         self.sortie_names = None
@@ -356,7 +356,7 @@ class App(tk.Tk):
         win.geometry("1400x800")
 
         expedition_names = [
-            "長距離", "長距離キラ", "海峡警備キラ", "ブルネイ哨戒キラ",
+            "長距離","長距離4キラ" ,"長距離5キラ", "海峡警備キラ", "ブルネイ哨戒キラ",
             "海上護衛", "海上護衛キラ", "タンカー護衛", "タンカー護衛キラ",
             "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ",
             "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"
@@ -384,10 +384,10 @@ class App(tk.Tk):
             ),
 
             ("稼働する遠征の時間数", expedition_names,
-            [run_vals[i] + off_vals[i] for i in range(16)]),
+            [run_vals[i] + off_vals[i] for i in range(17)]),
 
             ("休息時間の遠征選択", expedition_names,
-            [sleep_vals[i] for i in range(16)]),
+            [sleep_vals[i] for i in range(17)]),
 
             ("　　　アイテム屋からの購入数", shop_names,
             [shop_vals[i] for i in range(6)])
