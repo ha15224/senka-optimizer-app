@@ -10,6 +10,8 @@
 
 ダウンロード（ドロップデータ）：https://docs.google.com/spreadsheets/d/107yJmRhAyjkye3ZP8doCkqTm0RmpeolM/
 
+# 『『『このREADMEにある備考を必ず読んでから使用してください』』』
+
 ## 紹介画像
 <img width="702" height="832" alt="image" src="https://github.com/user-attachments/assets/af559520-6816-4f45-a561-d65f02b68226" />
 <img width="641" height="277" alt="image" src="https://github.com/user-attachments/assets/5ad7a906-ba8b-469d-92ed-b1ef7f1e9e3d" />
