@@ -10,7 +10,7 @@
 
 ダウンロード（ドロップデータ）：https://docs.google.com/spreadsheets/d/107yJmRhAyjkye3ZP8doCkqTm0RmpeolM/
 
-**『『『 このREADMEの一番下にある備考を必ず読んでから使用してください 』』』**
+**『『『 必ずこのREADMEの一番下にある備考を読んでから使用してください 』』』**
 
 ## 紹介画像
 <img width="702" height="832" alt="image" src="https://github.com/user-attachments/assets/af559520-6816-4f45-a561-d65f02b68226" />
