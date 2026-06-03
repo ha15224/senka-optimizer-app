@@ -1,12 +1,12 @@
-# 月間戦果最適化計算機 v0.91
+# 月間戦果最適化計算機 v1.0
 
 使用する出撃，遠征，課金アイテムを変数として扱い，戦果を最大化するような組み合わせを求めます
 
 この最適化は線形計画問題に帰着されるため，ソルバーとしてPuLP/CBCを使います
 
-ダウンロード（アプリ）：https://drive.google.com/file/d/1fV14onuOceWrzfcg3Kmhpzia2EMpI5tZ
+ダウンロード（アプリ）：https://drive.google.com/file/d/1kb3W-nknH4womr_B-Byjpq-poirOqy0_/
 
-ダウンロード（出撃データテンプレ）：https://docs.google.com/spreadsheets/d/1eBN6qbRLIPYyuEY1H3xTFn0sNhZYGGZn/
+ダウンロード（出撃データテンプレ）：https://docs.google.com/spreadsheets/d/18GTMdcbik1HjYFut0gJyMrhUe3k7VdZ4/
 
 ダウンロード（ドロップデータ）：https://docs.google.com/spreadsheets/d/107yJmRhAyjkye3ZP8doCkqTm0RmpeolM/
 
@@ -35,6 +35,7 @@
   - 最大割合とは，全体の出撃に対しその出撃の最大の割合を指定します．例えば戦果ローテで３－２艦隊が不足している場合などに使えます．0~1の値で設定してください
   - 轟沈周回は出撃のテンプレに入れず，「轟沈回収を許容」オプションを使ってください．
   - 秒数はすべてドロップカットした周回時間で設定してください．最適解としてドロップが必要な場合は別途時間ペナルティが課されます（各艦+7.5秒）．
+  - 海域を入力するときは半角数字とハイフンを使ってください（例：３－２✕　3-2〇）
 - 日数を1に，特別戦果を0に設定するとデイ戦果の最適化ソルバーとして使えます
 - パラメータ設定のオフセットには，初期資源，任務，プレ箱，勲章割りからの収入を入れてください．遠征・課金からの収入は自動的に最適化されて加算されます
   - 出撃の組み合わせは，遠征からの収入，課金からの収入，ドロップ処理からの収入，そしてこれらのオフセットを足した全予算に収まるように計算されます
@@ -52,3 +53,5 @@
 アプリ v0.2：https://drive.google.com/file/d/1VLpqsWsZS0iUbLgf_R6uEJ15fZuOMTfO/
 
 アプリ v0.32：https://drive.google.com/file/d/1cF1oJ-qfD63CSK4LfvHJYdrpZYTSBYPK/
+
+アプリ v0.91：https://drive.google.com/file/d/1fV14onuOceWrzfcg3Kmhpzia2EMpI5tZ
