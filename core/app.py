@@ -5,6 +5,13 @@ import pandas as pd
 import os
 from model import solve_senka
 
+import os
+import sys
+
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 class TextRedirector:
     def __init__(self, widget):
@@ -25,10 +32,10 @@ def load_sorties_from_excel(path):
 
     df = pd.read_excel(path, header=None)
 
-    if df.shape[0] < 11 or df.shape[1] < 2:
+    if df.shape[0] < 12 or df.shape[1] < 2:
         raise ValueError(
             "データの形式が正しくありません．"
-            "少なくとも11行2列以上のデータが必要です．"
+            "少なくとも12行2列以上のデータが必要です．"
         )
 
     sortie_names = []
@@ -43,11 +50,11 @@ def load_sorties_from_excel(path):
 
         column = df.iloc[:, col]
 
-        # Require rows 0~10 to exist
-        if column.iloc[0:11].isnull().any():
+        # Require rows 0~11 to exist
+        if column.iloc[0:12].isnull().any():
             raise ValueError(
                 f"列 {col + 1} が完成されていません．"
-                "最初の11行にすべて値が入っている必要があります．"
+                "最初の12行にすべて値が入っている必要があります．"
             )
 
         # sortie name
@@ -59,17 +66,17 @@ def load_sorties_from_excel(path):
             )
 
         # 海域
-        world = str(column.iloc[9])
+        world = str(column.iloc[10])
 
         # 通過マス
-        nodes = str(column.iloc[10])
+        nodes = str(column.iloc[11])
 
         try:
-            weights = [float(x) for x in column.iloc[1:7]]
+            weights = [float(x) for x in column.iloc[1:8]]
 
-            s = float(column.iloc[7])
+            s = float(column.iloc[8])
 
-            m = float(column.iloc[8])
+            m = float(column.iloc[9])
 
         except Exception:
             raise ValueError(
@@ -144,7 +151,13 @@ def load_drop_data_from_excel(path):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("月間戦果最適化計算機 v0.91")
+
+        self.icon = tk.PhotoImage(
+            file=resource_path("zuihoufairy.png")
+        )
+        self.iconphoto(True, self.icon)
+
+        self.title("月間戦果最適化計算機 v1.0")
         self.geometry("700x800")
 
         self.sortie_names = None
@@ -169,6 +182,7 @@ class App(tk.Tk):
             ("燃料オフセット", "initialfuel", 200000, "遠征と課金からの獲得資源以外の燃料予算（初期備蓄・任務・自然回復・プレ箱等）"),
             ("弾薬オフセット", "initialammo", 200000, "上記同様"),
             ("鋼材オフセット", "initialsteel", 150000, "上記同様"),
+            ("ボーキオフセット", "initialbaux", 150000, "上記同様"),
             ("バケツオフセット", "initialbucket", 1900, "上記同様"),
             ("遠征用cond値", "initialcond", 0, "遠征に使用できるcondの初期値"),
         ]
@@ -225,7 +239,7 @@ class App(tk.Tk):
 
         tk.Checkbutton(
             check_frame,
-            text="「遠征時間」中に短時間の遠征（バケツ遠征）を許容",
+            text="「遠征時間」中に短時間の遠征（1時間以下）を許容",
             variable=self.enable_short_bucket
         ).pack(side="left", padx=10)
 
@@ -353,18 +367,19 @@ class App(tk.Tk):
     ):
         win = tk.Toplevel(self)
         win.title("最適化結果")
-        win.geometry("1400x800")
+        win.geometry("1350x850")
 
         expedition_names = [
             "長距離","長距離4キラ" ,"長距離5キラ", "海峡警備キラ", "ブルネイ哨戒キラ",
             "海上護衛", "海上護衛キラ", "タンカー護衛", "タンカー護衛キラ",
             "鼠輸送", "鼠輸送キラ", "北方鼠", "北方鼠キラ",
-            "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ"
+            "東京急行", "東京急行キラ", "東京急行(弐)", "東京急行(弐)キラ",
+            "防空射撃", "防空射撃4キラ", "防空射撃5キラ","ボーキ輸送", "ボーキ輸送キラ", "ボーキ船団", "ボーキ船団キラ", "MO作戦", "MO作戦キラ"
         ]
 
         shop_names = [
             "タンカー徴用", "弾薬", "高速修復材",
-            "出撃セット", "間宮", "工廠セット"
+            "出撃セット", "間宮", "工廠セット", "アルミ大増産"
         ]
 
         # -----------------------------
@@ -384,21 +399,21 @@ class App(tk.Tk):
             ),
 
             ("稼働する遠征の時間数", expedition_names,
-            [run_vals[i] + off_vals[i] for i in range(17)]),
+            [run_vals[i] + off_vals[i] for i in range(26)]),
 
             ("休息時間の遠征選択", expedition_names,
-            [sleep_vals[i] for i in range(17)]),
+            [sleep_vals[i] for i in range(26)]),
 
             ("　　　アイテム屋からの購入数", shop_names,
-            [shop_vals[i] for i in range(6)])
+            [shop_vals[i] for i in range(7)])
         ]
 
         ship_labels = ["潜水", "駆逐", "軽巡", "水母", "重巡", "戦艦", "軽母", "空母"]
-        resource_labels_small = ["燃料", "弾薬", "鋼材"]
+        resource_labels_small = ["燃料", "弾薬", "鋼材", "ボーキ"]
 
         extra_sections = [
             (
-                "　　　　　ドロップ処理",
+                "　　　　　　ドロップ処理",
                 ship_labels,
                 [
                     (drops_sunk[i], drops_scrap[i])
@@ -407,7 +422,7 @@ class App(tk.Tk):
                 ("轟沈数", "解体数")
             ),
             (
-                "　ドロップ処理からの獲得資源",
+                "　　ドロップ処理からの獲得資源",
                 resource_labels_small,
                 [
                     (earned_from_sunk[i], earned_from_scrap[i])
@@ -612,7 +627,7 @@ class App(tk.Tk):
                 tk.Label(
                     win,
                     text=name,
-                    width=3,
+                    width=5,
                     anchor="w"
                 ).grid(
                     row=start_row + 2 + i,
@@ -649,13 +664,13 @@ class App(tk.Tk):
                 )
 
             # move downward for next section
-            start_row += len(names) + 4
+            start_row += len(names) + 2
 
 
         # -----------------------------
         # Resource breakdown column
         # -----------------------------
-        resource_names = ["燃料", "弾薬", "鋼材", "バケツ", "cond"]
+        resource_names = ["燃料", "弾薬", "鋼材", "ボーキ" ,"バケツ", "cond"]
 
         resource_sections = [
             ("出撃による消費資源", spent_from_sorties),
@@ -738,6 +753,7 @@ class App(tk.Tk):
                 "initialfuel": float(self.params["initialfuel"].get()),
                 "initialammo": float(self.params["initialammo"].get()),
                 "initialsteel": float(self.params["initialsteel"].get()),
+                "initialbaux": float(self.params["initialbaux"].get()),
                 "initialbucket": float(self.params["initialbucket"].get()),
                 "initialcond": float(self.params["initialcond"].get()),
                 "sunk_hourly_rate": float(self.sunk_speed_var.get()),
