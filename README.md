@@ -8,7 +8,7 @@
 
 ダウンロード（出撃データテンプレ）：https://docs.google.com/spreadsheets/d/18GTMdcbik1HjYFut0gJyMrhUe3k7VdZ4/
 
-ダウンロード（ドロップデータ）：https://docs.google.com/spreadsheets/d/107yJmRhAyjkye3ZP8doCkqTm0RmpeolM/
+ダウンロード（ドロップデータ）：https://docs.google.com/spreadsheets/d/1hWOsL9WLjb59RRhJ94PE9lVROyiq_kq3/
 
 **『『『 必ずこのREADMEの一番下にある備考を読んでから使用してください 』』』**
 
